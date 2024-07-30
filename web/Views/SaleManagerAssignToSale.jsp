@@ -6,12 +6,11 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Order Details</title>
-        <link rel="icon" href="image/logoshop.png" type="image/png">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <link rel="preload stylesheet" as="style" fetchpriority="low"
               href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
         <style>
             body {
                 margin-top: 20px;
@@ -365,6 +364,24 @@
                                 <button type="submit">Tìm kiếm</button>
                             </form>
                         </div>
+                        <div class="dropdown" style="margin-left: 15px;
+                             width: 240px">
+                            <div class="dropbtn">
+                                Trạng Thái Phân Đơn 
+                                <span><i class="fa fa-chevron-down"></i></span>
+                            </div>
+                            <form id="assignform" action="AssignToSale" method="post">
+                                <ul class="dropdown-content">
+                                    <li>
+                                        <input type="radio" name="sale"  value="0" style="display: inline-block" />   Chưa phân
+                                    </li>
+                                    <li>
+                                        <input type="radio" name="sale"  value="a" style="display: inline-block" />   Đã phân
+                                    </li>
+
+                                </ul>
+                            </form>
+                        </div>
                         <div class="sort-wrapper">
                             <div class="sort-header">
                                 <span>Sắp xếp</span>
@@ -437,9 +454,9 @@
                                 </div>
                             </div>
                             <div class="dropdown" style="margin-left: 15px;
-                                 width: 160px">
+                                 width: 180px">
                                 <div class="dropbtn">
-                                    Status
+                                    Trạng Thái Đơn
                                     <span><i class="fa fa-chevron-down"></i></span>
                                 </div>
                                 <ul class="dropdown-content">
@@ -453,26 +470,14 @@
                                         <input type="checkbox" name="status-filter" data-status="Confirmed" value="Confirmed" style="display: inline-block" /> Confirmed
                                     </li>
                                     <li>
+                                        <input type="checkbox" name="status-filter" data-status="Wait" value="Wait" style="display: inline-block" /> Wait
+                                    </li>
+                                    <li>
                                         <input type="checkbox" name="status-filter" data-status="Cancled" value="Cancled" style="display: inline-block" /> Cancled
                                     </li>
                                 </ul>
                             </div>
-                            <div class="dropdown" style="margin-left: 15px;
-                                 width: 240px">
-                                <div class="dropbtn">
-                                    Trạng Thái Phân Đơn 
-                                    <span><i class="fa fa-chevron-down"></i></span>
-                                </div>
-                                <ul class="dropdown-content">
-                                    <li>
-                                        <input type="radio" name="sale"  value="0" style="display: inline-block" />   Chưa phân
-                                    </li>
-                                    <li>
-                                        <input type="radio" name="sale"  value="a" style="display: inline-block" />   Đã phân
-                                    </li>
 
-                                </ul>
-                            </div>
 
                             <div class="form-group">
                                 <button type="button" id="clearButton" class="btn btn-secondary" >Clear</button>
@@ -487,13 +492,13 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th scope="col">Mã</th>
-                                    <th scope="col">Người đặt</th>
-                                    <th scope="col">Đơn giá</th>
-                                    <th scope="col">Ngày đặt</th>
-                                    <th scope="col">Trạng thái</th>
-                                    <th scope="col">Tên Nv kinh doanh</th>
-                                    <th scope="col">Chi tiết</th>
-                                    <th scope="col">Phân đơn</th>
+                                    <th scope="col">Người Mua</th>
+                                    <th scope="col">Tổng Tiền </th>
+                                    <th scope="col">Ngày Đặt</th>
+                                    <th scope="col">Trạng Thái</th>
+                                    <th scope="col">Nhân Viên Bán Hàng</th>
+                                    <th scope="col">Xem Chi Tiết</th>
+                                    <th scope="col">Phân Đơn</th>
                                 </tr>
                             </thead>
                             <tbody id="dataTableBody">
@@ -505,23 +510,23 @@
                                 <div class="modal-content">
                                     <!-- Modal Header -->
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="SearchSaleModalLabel">Danh sách nhân viên Kinh doanh</h5>
+                                        <h5 class="modal-title" id="SearchSaleModalLabel">Sale List</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
 
                                     <!-- Modal Body -->
                                     <div class="modal-body">
                                         <form id="SaleForm" class="d-flex mb-3">
-                                            <input type="text" class="form-control me-2" placeholder="Search by name..." name="apartofname">
-                                            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-                                            <button type="button" id="clearButtonSale" class="btn btn-secondary" >Hủy lọc</button>
+                                            <input type="text" class="form-control me-2" placeholder="Tìm kiếm theo tên..." name="apartofname">
+                                            <button type="submit" class="btn btn-primary">Search</button>
+                                            <button type="button" id="clearButtonSale" class="btn btn-secondary" >Clear</button>
 
                                         </form>
                                         <table class="table table-striped">
                                             <thead>
                                                 <tr>
                                                     <th>Mã</th>
-                                                    <th>Tên Nv kinh doanh</th>
+                                                    <th>Nhân Viên</th>
                                                     <th>Giới tính</th>
                                                     <th>Số điện thoại</th>
                                                     <th>Email</th>
@@ -597,180 +602,248 @@
         <%@include file="DashboardFooter.jsp" %>
 
         <script>
-
-            $(document).ready(function () {
-                // Function to handle form submissions
-                function handleFormSubmit() {
-                    // Gather data from SearchForm
-                    var searchValue = $('#FormSearch input[name="search"]').val();
-                    // Gather data from sortForm
-                    var sortByValue = $('#sortForm input[name="sortby"]:checked').val();
-                    var saleByValue = $('#filterForm input[name="sale"]:checked').val();
-                    // Gather data from filterForm
-                    var fromDateValue = $('#filterForm input[name="fromDate"]').val();
-                    var toDateValue = $('#filterForm input[name="toDate"]').val();
-                    var pageValue = $('#paginationForm input[name="page"]:checked').val();
-                    var statusValues = [];
-                    $('#filterForm input[name="status-filter"]:checked').each(function () {
-                        statusValues.push($(this).val());
-                    });
-
-
-
-
-                    // Populate hiddenForm inputs with gathered data
-                    $('#hiddenForm input[name="search"]').val(searchValue);
-                    $('#hiddenForm input[name="sortby"]').val(sortByValue);
-                    $('#hiddenForm input[name="sale"]').val(saleByValue);
-                    $('#hiddenForm input[name="fromDate"]').val(fromDateValue);
-                    $('#hiddenForm input[name="toDate"]').val(toDateValue);
-                    // Set multiple inputs for status-filter
-                    $('#hiddenForm input[name^="status-filter"]').each(function (index) {
-                        $(this).val(statusValues[index] || ''); // Assign value or empty string if no value
-                    });
-                    $('#hiddenForm input[name="page"]').val(pageValue);
-                    // Submit hiddenForm
+            var searchValue = '';
+            var sortByValue = '';
+            var saleByValue = '';
+            var fromDateValue = '';
+            var toDateValue = '';
+            var pageValue = '';
+            var statusValues = [];
+            loadDataOnPageLoad();
+            // Function to handle form submissions
+            function handleFormSubmit() {
+                // Gather data from SearchForm
+                searchValue = $('#FormSearch input[name="search"]').val();
+                // Gather data from sortForm
+                sortByValue = $('#sortForm input[name="sortby"]:checked').val();
+                saleByValue = $('#assignform input[name="sale"]:checked').val();
+                // Gather data from filterForm
+                console.log(saleByValue);
+                fromDateValue = $('#filterForm input[name="fromDate"]').val();
+                toDateValue = $('#filterForm input[name="toDate"]').val();
+                pageValue = $('#paginationForm input[name="page"]:checked').val();
+                statusValues = [];
+                $('#filterForm input[name="status-filter"]:checked').each(function () {
+                    statusValues.push($(this).val());
+                });
 
 
 
 
-                    $.ajax({
-                        type: 'POST',
-                        url: 'AssignToSale',
-                        data: $('#hiddenForm').serialize(), // Serialize form data
-                        success: function (response) {
-                            // Handle success response if needed
-                            console.log('Form submitted successfully.');
-                            console.log(response);
-                            // Example: Update table with new data
-                            updateTable(response.orders);
-                            const totalPages = response.totalPages;
-                            $('#page-pagination').empty();
+                // Populate hiddenForm inputs with gathered data
+                $('#hiddenForm input[name="search"]').val(searchValue);
+                $('#hiddenForm input[name="sortby"]').val(sortByValue);
+                $('#hiddenForm input[name="sale"]').val(saleByValue);
 
-                            // Thêm các nút phân trang vào form
-                            for (let page = 1; page <= totalPages; page++) {
-                                const input = $('<input>').attr({
-                                    type: 'radio',
-                                    name: 'page',
-                                    id: `page${page}`,
-                                    value: page,
-                                    style: 'display: none;'
-                                });
-                                const label = $('<label>').attr({
-                                    for : `page${page}`,
-                                    class: 'page-node',
-                                    'aria-label': `Trang ${page}`,
-                                    style: 'width: 25px; border: groove;'
-                                }).text(page);
+                $('#hiddenForm input[name="fromDate"]').val(fromDateValue);
+                $('#hiddenForm input[name="toDate"]').val(toDateValue);
+                // Set multiple inputs for status-filter
+                $('#hiddenForm input[name^="status-filter"]').each(function (index) {
+                    $(this).val(statusValues[index] || ''); // Assign value or empty string if no value
+                });
+                $('#hiddenForm input[name="page"]').val(pageValue);
+                // Submit hiddenForm
 
-                                $('#page-pagination').append(input).append(label);
-                                label.on('click', function () {
-                                    $(this).prev('input[type="radio"]').prop('checked', true); // Đánh dấu ô radio tương ứng là đã chọn
-                                    handleFormSubmit(); // Gọi lại hàm xử lý khi submit form
-                                });
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            // Handle errors if any
-                            console.error('Form submission error:', error);
+
+
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'AssignToSale',
+                    data: $('#hiddenForm').serialize(), // Serialize form data
+                    success: function (response) {
+                        // Handle success response if needed
+                        console.log('Form submitted successfully.');
+                        console.log(response);
+                        // Example: Update table with new data
+                        updateTable(response.orders);
+                        const totalPages = response.totalPages;
+                        $('#page-pagination').empty();
+
+                        // Thêm các nút phân trang vào form
+                        for (let page = 1; page <= totalPages; page++) {
+                            const input = $('<input>').attr({
+                                type: 'radio',
+                                name: 'page',
+                                id: `page${page}`,
+                                value: page,
+                                style: 'display: none;'
+                            });
+                            const label = $('<label>').attr({
+                                for : `page${page}`,
+                                class: 'page-node',
+                                'aria-label': `Trang ${page}`,
+                                style: 'width: 25px; border: groove;'
+                            }).text(page);
+
+                            $('#page-pagination').append(input).append(label);
+                            label.on('click', function () {
+                                $(this).prev('input[type="radio"]').prop('checked', true); // Đánh dấu ô radio tương ứng là đã chọn
+                                handleFormSubmit(); // Gọi lại hàm xử lý khi submit form
+                            });
                         }
-                    });
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle errors if any
+                        console.error('Form submission error:', error);
+                    }
+                });
 
 
+                $.ajax({
+                    type: 'POST',
+                    url: 'SaleListServlet',
+                    data: $('#SaleForm').serialize(),
+                    success: function (response) {
+                        // Handle success response if needed
+                        console.log('Form submitted successfully.');
+                        console.log(response);
+                        // Example: Update table with new data
+                        var tableBody = $('#tablesale');
+                        tableBody.empty();
+                        $.each(response.listsale, function (index, c) {
+                            var row = '<tr >' +
+                                    '<td>' + c.id + '</td>' +
+                                    '<td>' + c.fullname + '</td>' +
+                                    '<td>' + c.gender + '</td>' +
+                                    '<td>' + c.phonenumber + '</td>' +
+                                    '<td>' + c.email + '</td>' +
+                                    '<td>' + c.status + '</td>' +
+                                    '<td>' +
+                                    '<div class="form-check">' +
+                                    '<input class="form-check-input" type="radio" name="selectedSaleId" id="sale' + c.id + '" value="' + c.id + '">' +
+                                    '</div>' +
+                                    '</td>' +
+                                    '</tr>';
+                            tableBody.append(row);
+                        });
+                        const totalPages = response.totalPage;
+                        $('#page-pagination-sale').empty();
 
+                        // Thêm các nút phân trang vào form
+                        for (let page = 1; page <= totalPages; page++) {
+                            const input = $('<input>').attr({
+                                type: 'radio',
+                                name: 'page',
+                                id: `page${page}`,
+                                value: page,
+                                style: 'display: none;'
+                            });
+                            const label = $('<label>').attr({
+                                for : `page${page}`,
+                                class: 'page-node',
+                                'aria-label': `Trang ${page}`,
+                                style: 'width: 25px; border: groove;'
+                            }).text(page);
 
-
-                }
-                // Function to load data on page load
-                function loadDataOnPageLoad() {
-
-
-                    $.ajax({
-                        type: 'POST',
-                        url: 'AssignToSale',
-                        data: $('#hiddenForm').serialize(), // Serialize form data if needed
-                        success: function (response) {
-                            // Handle success response
-                            console.log('Data loaded successfully.');
-                            console.log(response);
-                            // Update table with initial data
-                            updateTable(response.orders);
-
-                        },
-                        error: function (xhr, status, error) {
-                            // Handle errors if any
-                            console.error('Error loading initial data:', error);
+                            $('#page-pagination-sale').append(input).append(label);
+                            label.on('click', function () {
+                                $(this).prev('input[type="radio"]').prop('checked', true); // Đánh dấu ô radio tương ứng là đã chọn
+                                pageSale(); // Gọi lại hàm xử lý khi submit form
+                            });
                         }
-                    });
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle errors if any
+                        console.error('Form submission error:', error);
+                    }
+                });
+
+
+            }
+            // Function to load data on page load
+            function loadDataOnPageLoad() {
+                console.log('load');
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'AssignToSale',
+                    // Serialize form data if needed
+                    success: function (response) {
+                        // Handle success response
+                        console.log('Data loaded successfully.');
+                        console.log(response);
+                        // Update table with initial data
+                        updateTable(response.orders);
+
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle errors if any
+                        console.error('Error loading initial data:', error);
+                    }
+                });
 
 
 
 
 
-                    $.ajax({
-                        type: 'POST',
-                        url: 'AssignToSale',
+                $.ajax({
+                    type: 'POST',
+                    url: 'AssignToSale',
 
-                        success: function (data) {
-                            console.log(data); // In ra console để xem dữ liệu trả về từ Servlet
-                            // Ví dụ data.totalPages chứa số lượng trang
-                            const totalPages = data.totalPages;
-                            $('#page-pagination').empty();
+                    success: function (data) {
+                        console.log(data); // In ra console để xem dữ liệu trả về từ Servlet
+                        // Ví dụ data.totalPages chứa số lượng trang
+                        const totalPages = data.totalPages;
+                        $('#page-pagination').empty();
 
-                            // Thêm các nút phân trang vào form
-                            for (let page = 1; page <= totalPages; page++) {
-                                const input = $('<input>').attr({
-                                    type: 'radio',
-                                    name: 'page',
-                                    id: `page${page}`,
-                                    value: page,
-                                    style: 'display: none;'
-                                });
-                                const label = $('<label>').attr({
-                                    for : `page${page}`,
-                                    class: 'page-node',
-                                    'aria-label': `Trang ${page}`,
-                                    style: 'width: 25px; border: groove;'
-                                }).text(page);
+                        // Thêm các nút phân trang vào form
+                        for (let page = 1; page <= totalPages; page++) {
+                            const input = $('<input>').attr({
+                                type: 'radio',
+                                name: 'page',
+                                id: `page${page}`,
+                                value: page,
+                                style: 'display: none;'
+                            });
+                            const label = $('<label>').attr({
+                                for : `page${page}`,
+                                class: 'page-node',
+                                'aria-label': `Trang ${page}`,
+                                style: 'width: 25px; border: groove;'
+                            }).text(page);
 
-                                $('#page-pagination').append(input).append(label);
-                                label.on('click', function () {
-                                    $(this).prev('input[type="radio"]').prop('checked', true); // Mark corresponding radio button as checked
-                                    handleFormSubmit(); // Call form submission handling again
-                                });
-                            }
-
-                            // Xóa các phần tử hiện tại trong phân trang (nếu có)
-
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('Lỗi khi gửi yêu cầu AJAX:', error);
+                            $('#page-pagination').append(input).append(label);
+                            label.on('click', function () {
+                                $(this).prev('input[type="radio"]').prop('checked', true); // Mark corresponding radio button as checked
+                                handleFormSubmit(); // Call form submission handling again
+                            });
                         }
-                    });
 
-                }
+                        // Xóa các phần tử hiện tại trong phân trang (nếu có)
 
-
-                $('#FormSearch').submit(function (event) {
-                    event.preventDefault();
-                    handleFormSubmit();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Lỗi khi gửi yêu cầu AJAX:', error);
+                    }
                 });
 
-                $('input[name="sortby"]').on('change', function () {
-                    event.preventDefault();
-                    handleFormSubmit();
-                });
+            }
 
-                $('#filterForm input, #filterForm select').on('change', function () {
-                    event.preventDefault();
-                    handleFormSubmit();
-                });
-                $('#paginationForm input[name="page"]').on('click', function () {
-                    event.preventDefault();
-                    handleFormSubmit();
-                });
-                loadDataOnPageLoad();
+
+            $('#FormSearch').submit(function (event) {
+                event.preventDefault();
+                handleFormSubmit();
             });
+
+            $('#sortForm input[name="sortby"]').on('change', function () {
+                event.preventDefault();
+                handleFormSubmit();
+            });
+            $('#assignform input[name="sale"]').on('change', function () {
+                event.preventDefault();
+                handleFormSubmit();
+            });
+            $('#filterForm input, #filterForm select').on('change', function () {
+                event.preventDefault();
+                handleFormSubmit();
+            });
+            $('#paginationForm input[name="page"]').on('click', function () {
+                event.preventDefault();
+                handleFormSubmit();
+            });
+
+
             //search sale
             $('#SaleForm').submit(function (event) {
                 event.preventDefault();
@@ -955,31 +1028,50 @@
 
             });
             // gán đơn cho sale
-            $(document).ready(function () {
-                // When show modal button is clicked, set the orderId in the hidden input
-                $(document).on('click', '[data-bs-toggle="modal"]', function () {
-                    var orderId = $(this).data('order-id');
-                    $('#selectedOrderId').val(orderId);
-                });
 
-                // Sử dụng event delegation cho radio buttons
-                $(document).on('change', 'input[name="selectedSaleId"]', function () {
-                    var selectedSaleId = $(this).val();
-                    $('#selectedSaleId').val(selectedSaleId);
-                });
-
-                // Xử lý sự kiện click cho nút assignSaleButton
-                $('#assignSaleButton').click(function () {
-                    var selectedSaleId = $('input[name="selectedSaleId"]:checked').val();
-                    if (selectedSaleId) {
-                        $('#selectedSaleId').val(selectedSaleId);
-                        $('#assignSaleForm').submit();
-                    } else {
-                        alert('Vui lòng chọn một sale trước khi xác nhận.');
-                    }
-                });
-
+            // When show modal button is clicked, set the orderId in the hidden input
+            $(document).on('click', '[data-bs-toggle="modal"]', function () {
+                var orderId = $(this).data('order-id');
+                $('#selectedOrderId').val(orderId);
             });
+
+            // Sử dụng event delegation cho radio buttons
+            $(document).on('change', 'input[name="selectedSaleId"]', function () {
+                var selectedSaleId = $(this).val();
+                $('#selectedSaleId').val(selectedSaleId);
+            });
+
+            // Xử lý sự kiện click cho nút assignSaleButton
+            $('#assignSaleButton').click(function () {
+                var selectedSaleId = $('input[name="selectedSaleId"]:checked').val();
+                if (selectedSaleId) {
+                    $('#selectedSaleId').val(selectedSaleId);
+
+                    $.ajax({
+                        type: 'POST',
+                        url:  $('#assignSaleForm').attr('action'), // Change this to the correct URL for your assignment endpoint
+                        data:$('#assignSaleForm').serialize() ,
+                        success: function (response) {
+                            console.log('Sale assigned successfully:', response);
+                            // Optionally, update the UI or provide feedback to the user
+                            alert('Sale assigned successfully!');
+                            // Close the modal if needed
+                            $('#SearchSaleModal').modal('hide');
+                            handleFormSubmit();
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error assigning sale:', error);
+                            alert('Error assigning sale. Please try again.');
+                        }
+                    });
+
+
+                } else {
+                    alert('Vui lòng chọn một sale trước khi xác nhận.');
+                }
+            });
+
+
             //phân trang order 
             function updatePage(data) {
                 $('#page-pagination').empty();
@@ -1011,7 +1103,7 @@
                     var row = '<tr>' +
                             '<td>' + item.id + '</td>' +
                             '<td>' + item.customer + '</td>' +
-                            '<td>' + item.totalcost + '</td>' +
+                            '<td>' + item.totalcost + ' ₫ </td>' +
                             '<td>' + item.orderdate + '</td>' +
                             '<td>' + item.status + '</td>';
                     if (item.salename !== null) {
@@ -1059,6 +1151,8 @@
 
 // nút clear 
             $('#clearButton').on('click', function () {
+                console.log('clear');
+                loadDataOnPageLoad();
                 $('#FormSearch')[0].reset();
                 $('#filterForm')[0].reset();
                 $('#filterForm input[type="checkbox"]').prop('checked', false);
@@ -1123,8 +1217,42 @@
                 });
 
             });
+            const ws = new WebSocket('ws://localhost:8080/FurnitureHieu/orderUpdates');
+
+            ws.onmessage = function (event) {
+
+                $('#FormSearch input[name="search"]').val(searchValue);
+                $('#sortForm input[name="sortby"]').val(sortByValue);
+                $('#filterForm input[name="sale"]').val(saleByValue);
+                $('#filterForm input[name="fromDate"]').val(fromDateValue);
+                $('#filterForm input[name="toDate"]').val(toDateValue);
+                $('#paginationForm input[name="page"]').val(pageValue);
+                $('#filterForm input[name="status-filter"]').each(function (index) {
+                    $(this).prop('checked', statusValues.includes($(this).val()));
+                });
+                if (event.data) {
+                    console.log(event.data);
+                    handleFormSubmit();
+                } else {
+                    loadDataOnPageLoad();
+                }
+
+            };
+
+            ws.onopen = function () {
+                console.log('WebSocket connection established.');
+            };
+
+            ws.onclose = function () {
+                console.log('WebSocket connection closed.');
+            };
+
+            ws.onerror = function (error) {
+                console.error('WebSocket error:', error);
+            };
 
         </script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     </body>
 </html>

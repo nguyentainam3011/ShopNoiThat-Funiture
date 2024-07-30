@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Filter.java to edit this template
  */
-package UserAuthorization;
+
 
 import DAL.UserDAO;
 import Models.User;
@@ -145,7 +145,7 @@ public class UserAuthorization implements Filter {
                     || uri1.equals("ProductDetailServlet") || uri1.equals("LoginServlet")
                     || uri1.equals("PageServlet") || uri1.equals("AboutUsServlet")
                     || uri1.equals("FurnitureHieu") || uri1.equals("ResetPasswordServlet")
-                    ||uri1.equals("OrderStatus") || uri1.equals("VerifyResetEmail")) {
+                    ||uri1.equals("OrderStatus") || uri1.equals("VerifyResetEmail")|| uri1.equals("CartContact")  || uri1.equals("MyOrderInformationServlet")) {
             } else {
                 httpServletResponse.sendRedirect("HomePage?action=showLoginForm");
             }

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
+    <listener>
+        <listener-class>Controller.WebSocket.AppContextListener</listener-class>
+    </listener>
+
     <servlet>
         <servlet-name>HomePage</servlet-name>
         <servlet-class>Controller.Public.HomePage</servlet-class>
@@ -232,6 +236,14 @@
         <servlet-name>AboutUsServlet</servlet-name>
         <servlet-class>Controller.Public.AboutUsServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UpdateToOrder</servlet-name>
+        <servlet-class>Controller.Customer.UpdateToOrder</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CartDetailUpdate</servlet-name>
+        <servlet-class>Controller.Customer.CartDetailUpdate</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>HomePage</servlet-name>
         <url-pattern>/HomePage</url-pattern>
@@ -463,6 +475,14 @@
     <servlet-mapping>
         <servlet-name>AboutUsServlet</servlet-name>
         <url-pattern>/AboutUsServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateToOrder</servlet-name>
+        <url-pattern>/UpdateToOrder</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CartDetailUpdate</servlet-name>
+        <url-pattern>/CartDetailUpdate</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>

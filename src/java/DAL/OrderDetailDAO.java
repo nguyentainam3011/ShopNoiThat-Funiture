@@ -72,6 +72,20 @@ public class OrderDetailDAO extends DBContext {
             return false;
         }
     }
+    public boolean deleteOrderDetailbyOrderid(int orderId) {
+        String sql = "DELETE FROM OrderDetail WHERE order_id = ?";
+
+        try (
+            PreparedStatement pstmt = connect.prepareStatement(sql)
+        ) {
+            pstmt.setInt(1, orderId);
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Error deleting order detail", ex);
+            return false;
+        }
+    }
 
     // Phương thức getOrderDetailsByOrderId
     public ArrayList<OrderDetail> getOrderDetailsByOrderId(int orderId) {

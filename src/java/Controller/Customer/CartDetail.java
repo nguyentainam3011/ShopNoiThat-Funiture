@@ -185,6 +185,8 @@ public class CartDetail extends HttpServlet {
         request.setAttribute("countcartitem", countCartItem);
         request.setAttribute("saleOffList", saleOffList);
         request.setAttribute("sumtotalprice", (long) sumtotalprice);
+        
+        
         processRequest(request, response);
         request.getRequestDispatcher("Views/CartDetail.jsp").forward(request, response);
         JsonObject jsonObject = new JsonObject();

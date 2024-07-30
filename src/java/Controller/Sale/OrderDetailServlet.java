@@ -153,6 +153,15 @@ public class OrderDetailServlet extends HttpServlet {
                 // Xử lý hủy đơn hàng
                 OrderDAO orderDAO = new OrderDAO();
                 orderDAO.updateOrderStatus(order_id, "Canceled");
+                List<OrderDetail> orderDetails = new OrderDetailDAO().getOrderDetailsByOrderId(order_id);
+                for (OrderDetail orderDetail : orderDetails) {
+                    ProductDetail productDetail = new ProductDetailDAO().getProductDetail(orderDetail.getProductdetail_id());
+                    productDetail.setQuantity(productDetail.getQuantity() + orderDetail.getQuantity());
+                    new ProductDetailDAO().updateProductDetail(productDetail);
+                    Product product = new ProductDAO().getProductByID(productDetail.getProduct_id());
+                    product.setQuantity(product.getQuantity() + orderDetail.getQuantity());
+                    new ProductDAO().updateProduct(product);
+                }
                 OrderUpdateEndpoint.sendUpdate("update");
                 // Chuyển hướng người dùng đến trang thông tin đơn hàng sau khi hủy
                 response.sendRedirect("Views/MyOrderInformation.jsp");

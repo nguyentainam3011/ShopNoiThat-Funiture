@@ -61,6 +61,8 @@ public class OrderStatus extends HttpServlet {
                 }
             }
             new OrderDAO().updateOrderStatus(Integer.parseInt(vnp_TxnRef), "Order");
+            int saleid = new UserDAO().getidsale();
+            new OrderDAO().updateOrderSale(Integer.parseInt(vnp_TxnRef), saleid);
             OrderUpdateEndpoint.sendUpdate("order");
         } else {
             request.setAttribute("vnp_TransactionStatus", "Thất Bại");
@@ -76,6 +78,7 @@ public class OrderStatus extends HttpServlet {
         User customer = userDAO.getUserByID(Integer.parseInt(sessionid));
         HttpSession session = request.getSession();
         session.setAttribute("customer", customer);
+        session.removeAttribute("order_"+sessionid);
         request.getRequestDispatcher("Views/OrderStatusPayment.jsp").forward(request, response);
     }
 

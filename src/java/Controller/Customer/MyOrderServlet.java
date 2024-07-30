@@ -205,7 +205,12 @@ public class MyOrderServlet extends HttpServlet {
                         }
                         break;
                     case "Wait":
-                        htmlResponse.append("                <a href=\"#\" class=\"btn btn-light\" style=\"height: 30px; background-color: pink\">Thanh toán ngay</a>\n");
+                        htmlResponse.append("                <button class =\"btn btn-light\" style=\" height: 30px; margin-left: 10px; background-color: pink\"  id=\"orderformButton\">\n"
+                                + "                                                                    Thanh toán ngay\n"
+                                + "                                                                </button>\n"
+                                + "                                                                <form id=\"orderagain\" action=\"${pageContext.request.contextPath}/AddToOrder\" method=\"post\" style=\"display: none;\">\n"
+                                + "                                                                    <input type=\"hidden\" name=\"orderid\" value=\"${order.id}\">\n"
+                                + "                                                                </form>");
                         break;
                     default:
                         htmlResponse.append("                <button style=\"width: 80px; height: 30px\" class=\"btn btn-warning\">")

@@ -9,7 +9,6 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Document</title>
-        <link rel="icon" href="image/logoshop.png" type="image/png">
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
         <style>
             .payment-details {
@@ -313,7 +312,7 @@
                         <c:otherwise>
                             <c:forEach items="${addresslist}" var="address">
                                 <input type="hidden" id="addressid" name="addressid" value="${address.id}">
-                                
+
                                 <c:set var="status" value="default" ></c:set>
                                 <c:if test="${address.status eq status }">
                                     <p class="mb-1">
@@ -407,11 +406,11 @@
                                         <div>${cartdetail.color.colorname}</div>
                                     </td>
                                     <td class="align-middle">
-                                        <fmt:formatNumber value="${cartdetail.cartItem.totalcost/cartdetail.cartItem.quantity}" type="number" minFractionDigits="0" maxFractionDigits="0" groupingUsed="true" />₫
+                                        ${cartdetail.cartItem.totalcost/cartdetail.cartItem.quantity}
 
                                     </td>
                                     <td class="align-middle">${cartdetail.cartItem.quantity}</td>
-                                    <td class="align-middle"><fmt:formatNumber value="${cartdetail.cartItem.totalcost}" type="number" minFractionDigits="0" maxFractionDigits="0" groupingUsed="true" />₫</td>
+                                    <td class="align-middle">${cartdetail.cartItem.totalcost}</td>
                                     <td class="align-middle">
                                         <div class="form-group">
                                             <label for="message">Lời nhắn:</label>
@@ -486,7 +485,17 @@
                             href="https://help.shopee.vn/portal/article/77242" target="_blank"
                             rel="noopener noreferrer">Điều khoản Furniture</a>
                     </div>
-                    <button id="order" class="btn btn-primary btn-block">Đặt hàng</button>
+
+                    <c:set var="key" value="order_${customer.id}" />
+                    <c:set var="orderValue" value="${sessionScope.key}" />
+                    <c:choose>
+                        <c:when test="${orderValue==0}">
+                            <button id="order" class="btn btn-primary btn-block">Cập nhật</button>
+                        </c:when>
+                        <c:otherwise>
+                            <button id="order" class="btn btn-primary btn-block">Đặt hàng</button>
+                        </c:otherwise>
+                    </c:choose>
                     <a href="${pageContext.request.contextPath}/CartDetail" class="btn btn-primary btn-block">Trở Lại</a>
                 </div>
             </div>
@@ -585,7 +594,8 @@
             <input type="hidden" id="paymentIdInput" name="paymentId" value="">
             <input type="hidden" id="totalcost" name="totalcost" value="${sumtotalprice}">
             <input type="hidden" id="bankCodeserver" name="bankCode" value="">
-            
+            <input type="hidden" id="orderupdateid" name="orderupdateid" value="${orderupdateid}">
+
             <!-- Add hidden inputs for each cart detail -->
             <c:forEach items="${listcartdetail}" var="cartdetail" varStatus="status">
                 <input type="hidden" name="cartIds" value="${cartdetail.cartItem.id}">
@@ -593,8 +603,8 @@
                 <input type="hidden" name="cartDetailTotalcosts" value="${cartdetail.cartItem.totalcost}">
                 <input type="hidden" name="cartDetailQuantitys" value="${cartdetail.cartItem.quantity}">
             </c:forEach>
-                
-                
+
+
         </form>
 
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -608,7 +618,7 @@
 
                     // Lấy giá trị index của radio button được chọn
                     var selectedRadio = document.querySelector('input[name="payment"]:checked');
-                    document.getElementById("bankCodeserver").value=document.querySelector('input[name="bankCode"]:checked').value;
+                    document.getElementById("bankCodeserver").value = document.querySelector('input[name="bankCode"]:checked').value;
                     if (selectedRadio) {
                         var paymentIdvalue = selectedRadio.getAttribute('data-id');
                         console.log(paymentIdvalue);
@@ -623,14 +633,7 @@
                         }
 
                         var addressHiddenInput = document.querySelector('input[name="addressid"]');
-//                        if (addressHiddenInput) {
-//                            var addressId = addressHiddenInput.value;
-//                            console.log(addressId);
-//                            return ;
-//                        } else {
-//                            alert("Address ID input not found");
-//                            return;
-//                        }
+
                         var addressId = addressHiddenInput.value;
                         console.log(addressId);
 
@@ -670,6 +673,7 @@
                                         } else {
                                             window.location.href = x.data;
                                         }
+                                        console.log(x.data);
                                     } else {
                                         alert(x.Message);
                                     }
@@ -678,13 +682,7 @@
                                     console.error('Error:', error);
                                     document.getElementById("orderForm").submit();
                                 });
-//                        // Gửi form
-//                        var form = document.getElementById("orderForm");
-//                        if (form) {
-//                            form.submit();
-//                        } else {
-//                            alert("Order form not found");
-//                        }
+
                     } else {
                         alert("Please select a payment method.");
                     }
@@ -832,37 +830,7 @@
                 document.getElementById('phoneError1').style.display = 'none';
                 return true;
             }
-            function togglePaymentDetails(index) {
-                // Ẩn tất cả các payment-details trước khi hiển thị
-                $(".payment-details").removeClass("d-block").addClass("d-none");
 
-                // Hiển thị payment-details tương ứng với index được truyền vào
-                $("#payment-details-" + index).removeClass("d-none").addClass("d-block");
-            }
-            $("#orderForm").submit(function () {
-                var postData = $("#orderForm").serialize();
-                var submitUrl = $("#orderForm").attr("action");
-                $.ajax({
-                    type: "POST",
-                    url: submitUrl,
-                    data: postData,
-                    dataType: 'JSON',
-                    success: function (x) {
-                        if (x.code === '00') {
-                            if (window.vnpay) {
-                                vnpay.open({width: 768, height: 600, url: x.data});
-                            } else {
-                                location.href = x.data;
-                            }
-                            return false;
-                        } else {
-                            alert(x.Message);
-                        }
-                    }
-                });
-                return false;
-            });
-            
 
         </script>
     </body>

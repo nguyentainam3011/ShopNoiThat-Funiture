@@ -68,50 +68,42 @@
                 <a href="${pageContext.request.contextPath}/MyOrderInformationServlet?id=${vnp_TxnRef}" class="btn btn-info">Chi Tiết Đơn Hàng</a>
             </div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
         <%@ include file="HomeFooter.jsp" %>
         <script>
             $(document).ready(function () {
                 $('#orderformButton').click(function (event) {
                     event.preventDefault(); // Ngăn chặn hành động mặc định của nút nếu cần
-                    console.log('dmmmmmmm');
+
 
                     var form = $('#orderagain'); // Chọn form bằng jQuery và lấy DOM element
                     var postData = form.serialize();
                     var submitUrl = $(form).attr('action');
 
-                    $.ajax({
-                        type: 'POST',
-                        url: submitUrl,
-                        data: postData,
-                        // Ngăn jQuery xử lý dữ liệu FormData
-                        success: function (response) {
-                            try {
-                                // Nếu dữ liệu được gửi dưới dạng chuỗi JSON
-                                var parsedResponse = JSON.parse(response);
-                                console.log(parsedResponse.code); // Kiểm tra mã
-                                console.log(parsedResponse.data); // Kiểm tra dữ liệu
-
-                                if (parsedResponse.code === '00') {
-                                    if (window.vnpay) {
-                                        vnpay.open({width: 768, height: 600, url: parsedResponse.data});
-                                    } else {
-                                        location.href = parsedResponse.data;
-                                    }
-                                } else {
-                                    alert(parsedResponse.message); // Hiển thị thông báo
-                                }
-                            } catch (e) {
-                                console.error('Lỗi khi phân tích cú pháp phản hồi:', e);
-                            }
+                    fetch(submitUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
                         },
-                        error: function () {
-                            // Xử lý lỗi ở đây
-                            alert('Có lỗi xảy ra khi gửi yêu cầu.');
-                        }
-                    });
+                        body: postData
+                    })
+                            .then(response => response.json())
+                            .then(x => {
+                                if (x.code === '00') {
+                                    if (window.vnpay) {
+                                        vnpay.open({width: 768, height: 600, url: x.data});
+                                    } else {
+                                        window.location.href = x.data;
+                                    }
+                                    console.log(x.data);
+                                } else {
+                                    alert(x.Message);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                $(form).submit();
+                            });
 
                 });
             });

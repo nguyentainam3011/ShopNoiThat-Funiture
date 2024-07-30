@@ -129,6 +129,7 @@ public class OrderDAO extends DBContext {
                     od.setId(rs.getInt("id"));
                     od.setCustomer_id(rs.getInt("customer_id"));
                     od.setSale_id(rs.getInt("sale_id"));
+                    od.setPaymentMethod_id(rs.getInt("paymentmethod_id"));
                     od.setAddress_id(rs.getInt("address_id"));
                     od.setTotalcost(rs.getDouble("totalcost"));
                     // Chuyển đổi từ Timestamp sang LocalDateTime
@@ -430,7 +431,7 @@ public class OrderDAO extends DBContext {
                 + "    d.Date,\n"
                 + "    IFNULL(\n"
                 + "        (COUNT(CASE WHEN o.status = ? THEN 1 END) / NULLIF(COUNT(o.id), 0)) * 100,0)\n"
-                +  "  AS rate \n"
+                + "  AS rate \n"
                 + "FROM\n"
                 + "	DateRange d\n"
                 + "left join\n"
@@ -646,7 +647,7 @@ public class OrderDAO extends DBContext {
 
         return orderStats;
     }
-    
+
     public List<OrderSaleManager> getFilteredOrders(String saleId, String searchValue, String sortBy, String fromDate, String toDate, String[] statusFilters) {
         List<OrderSaleManager> orderList = new ArrayList<>();
 
@@ -729,7 +730,6 @@ public class OrderDAO extends DBContext {
         try {
             PreparedStatement ps = connect.prepareStatement(sql);
             int paramIndex = 1;
-            
 
             if (searchValue != null && searchValue.matches("\\d+")) { // Kiểm tra nếu searchValue là số
                 ps.setString(paramIndex++, searchValue);
@@ -780,7 +780,7 @@ public class OrderDAO extends DBContext {
 
         return orderList;
     }
-    
+
     public int createOrder(Order order) throws SQLException {
         String sql = "INSERT INTO `order` (customer_id , address_id,paymentmethod_id,orderdate, totalcost,status) VALUES (?,?,? , NOW(), ?,?)";
         try (PreparedStatement stmt = connect.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -789,7 +789,7 @@ public class OrderDAO extends DBContext {
             stmt.setInt(3, order.getPaymentMethod_id());
             stmt.setDouble(4, order.getTotalcost());
             stmt.setString(5, order.getStatus());
-            
+
             stmt.executeUpdate();
 
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
@@ -801,10 +801,11 @@ public class OrderDAO extends DBContext {
             }
         }
     }
-      public void updateOrderSale(int orderId, int sale_id) {
-        String sql = "UPDATE `furniture`.`order`\n"
-                + "SET\n"
-                + "`sale_id` = ?\n"
+
+    public void updateOrderSale(int orderId, int sale_id) {
+        String sql = "UPDATE `furniture`.`order` \n"
+                + "SET `sale_id` = ?, \n"
+                + "    `orderassign` = NOW() \n"
                 + "WHERE `id` = ?;";
         try (PreparedStatement statement = connect.prepareStatement(sql)) {
             statement.setInt(1, sale_id);
@@ -814,5 +815,68 @@ public class OrderDAO extends DBContext {
             LOGGER.log(Level.SEVERE, "Error retrieving order.", e);
         }
     }//tạo order
+
+    public boolean updateOrder(Order order) {
+        String sql = "UPDATE orders SET customer_id = ?, sale_id = ?, address_id = ?, paymentMethod_id = ?, totalcost = ?, orderDate = ?, status = ? WHERE id = ?";
+        try (
+                PreparedStatement stmt = connect.prepareStatement(sql)) {
+
+            stmt.setInt(1, order.getCustomer_id());
+            stmt.setInt(2, order.getSale_id());
+            stmt.setInt(3, order.getAddress_id());
+            stmt.setInt(4, order.getPaymentMethod_id());
+            stmt.setDouble(5, order.getTotalcost());
+
+            // Convert LocalDateTime to String for SQL
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String orderDateStr = order.getOrderDate().format(formatter);
+            stmt.setString(6, orderDateStr);
+
+            stmt.setString(7, order.getStatus());
+            stmt.setInt(8, order.getId());
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public List<Integer> cancelOverdueOrders() throws SQLException {
+        String selectSql = "SELECT id FROM `order` WHERE status = 'Wait' AND orderdate < NOW() - INTERVAL 1 MINUTE";
+        PreparedStatement selectStmt = connect.prepareStatement(selectSql);
+        ResultSet resultSet = selectStmt.executeQuery();
+
+        List<Integer> updatedIds = new ArrayList<>();
+        while (resultSet.next()) {
+            updatedIds.add(resultSet.getInt("id"));
+        }
+
+        // Step 2: Update status of orders with the retrieved IDs
+        if (!updatedIds.isEmpty()) {
+            String updateSql = "UPDATE `order` SET status = 'Canceled' WHERE id = ?";
+            PreparedStatement updateStmt = connect.prepareStatement(updateSql);
+
+            for (Integer id : updatedIds) {
+                updateStmt.setInt(1, id);
+                updateStmt.addBatch();
+            }
+
+            updateStmt.executeBatch();
+        }
+        return updatedIds;
+    }
+
+    public void updateOrdersSale() throws SQLException {
+        String query = "UPDATE `order` SET sale_id=NULL WHERE status = 'Order' AND orderassign < NOW() - INTERVAL 1 MINUTE;";
+        try (Statement stmt = connect.createStatement()) {
+            stmt.executeUpdate(query);
+        }
+    }
+
+    public static void main(String[] args) {
+        new OrderDAO().updateOrderSale(133, 8);
+    }
 
 }

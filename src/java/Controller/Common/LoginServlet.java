@@ -124,7 +124,7 @@ public class LoginServlet extends HttpServlet {
             request.setAttribute("password", password);
             userDAO.UpdateUser(customer.getRole_id(), "Online", customer.getId());
             response.sendRedirect("HomePage");
-            OrderUpdateEndpoint.sendUpdate("aaa");
+            OrderUpdateEndpoint.sendUpdate("login");
         }else if(customer != null && "Block".equals(customer.getStatus())){
             processRequest(request, response);
             request.setAttribute("showlogin", "block");

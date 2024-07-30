@@ -136,9 +136,11 @@ public class AddToCart extends HttpServlet {
     public static void main(String[] args) throws SQLException {
         CartItemDAO cartItemDAO = new CartItemDAO();
         CartItem cartItem = new CartItem();
-
+        cartItem.setProduct_id(19);
         cartItem.setCustomer_id(1);
-        cartItem.setProduct_id(3);
+        cartItem.setQuantity(1);
+        
+        cartItem.setTotalcost((long) (Double.parseDouble("1590000.00") *1));
 
         cartItemDAO.addCartItem(cartItem);
     }

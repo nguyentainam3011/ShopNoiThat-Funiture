@@ -367,7 +367,14 @@
                             <form id="deleteCartForm" action="${pageContext.request.contextPath}/DeleteCartItem" method="get" style="display:none;">
                                 <input type="hidden" name="cartid" value="${cartdetail.cartItem.id}">
                             </form>
-                            <a href="${pageContext.request.contextPath}/CartContact" class="btn btn-primary" style="width: 200px ;height: 40px; font-size: 20px;" >Mua hàng</a>
+                            <c:set var="key" value="order_${sessionScope.customer.id}" />
+                            <c:set var="orderValue" value="${sessionScope.key}" />
+
+
+                            <a href="${pageContext.request.contextPath}/CartContact" class="btn btn-primary" style="width: 200px; height: 40px; font-size: 20px;">Mua hàng</a>
+
+
+
                         </div>
                     </div>
                 </div>
@@ -625,7 +632,7 @@
                 var oldQuantity = parseInt(quantityInput.value);
                 console.log(oldQuantity);
                 var quantity = parseInt(quantityInput.value) + change;
-                
+
                 console.log(quantity);
                 if (quantity < 1)
                     quantity = 1;
@@ -638,7 +645,7 @@
                 // Calculate the total price and set it in the hidden input
                 if (cost[index] === 0) {
                     var totalPrice = pricePerItem / oldQuantity * quantity;
-                }else{
+                } else {
                     var totalPrice = cost[index] / oldQuantity * quantity;
                 }
                 document.getElementById("totalPrice" + index).value = totalPrice;
@@ -658,7 +665,7 @@
                         $('#countCartItemSelected').text('Tổng thanh toán (' + response.countcartitemselected + 'Sản phẩm):');
                         $('#sumtotalprice').text(response.sumtotalprice + '₫');
                         $(price).text(response.price + '₫');
-                        cost[index]=response.price;
+                        cost[index] = response.price;
 
 
                     },
