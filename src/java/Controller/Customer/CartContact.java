@@ -146,7 +146,7 @@ public class CartContact extends HttpServlet {
         }
         request.setAttribute("sumtotalprice", sumtotalprice);
        
-        request.setAttribute("orderupdateid", request.getParameter("orderidupdate"));
+        request.setAttribute("orderupdateid", request.getParameter("orderupdateid"));
         
         request.getRequestDispatcher("Views/CartContact.jsp").forward(request, response);
     }

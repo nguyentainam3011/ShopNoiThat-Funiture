@@ -489,7 +489,7 @@
                     <c:set var="key" value="order_${customer.id}" />
                     <c:set var="orderValue" value="${sessionScope.key}" />
                     <c:choose>
-                        <c:when test="${orderValue==0}">
+                        <c:when test="${orderupdateid==0}">
                             <button id="order" class="btn btn-primary btn-block">Cập nhật</button>
                         </c:when>
                         <c:otherwise>

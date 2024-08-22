@@ -210,7 +210,7 @@
                                                                 <form id="orderagain" action="${pageContext.request.contextPath}/AddToOrder" method="post" style="display: none;">
                                                                     <input type="hidden" name="orderid" value="${order.id}">
                                                                 </form>
-                                                                <a id="buynow" class="btn btn-primary" style="height: 30px; margin-top: 0;margin-left: 20px;">Cập nhật đơn hàng</a>
+                                                                <a id="buynow" class="btn btn-primary" style="height: 30px; margin-top: 0;margin-left: 20px;">Cập nhật địa chỉ</a>
                                                                 
                                                                 <button class="btn btn-danger" onclick="confirmCancelOrder(${order.id})" style="width: 80px; height: 30px; margin-left: 20px">Hủy đơn hàng</button>
                                                             </c:when>       

@@ -200,12 +200,6 @@ public class CartDetail extends HttpServlet {
         response.getWriter().write(json);
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-
-    }
     public String formatCurrency(double number) {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
         symbols.setGroupingSeparator(',');
@@ -214,24 +208,6 @@ public class CartDetail extends HttpServlet {
         return decimalFormat.format(number) + "₫";
     }
 
-    public static void main(String[] args) {
-        CartItemDAO cartItemDAO = new CartItemDAO();
-//        List<CartItemWithDetail> cartItemWithDetails = new ArrayList<>();
-//        try {
-//            cartItemWithDetails = cartItemDAO.getCartItemsDetail(5);
-//        } catch (SQLException ex) {
-//            Logger.getLogger(CartDetail.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        for (CartItemWithDetail cartItemWithDetail : cartItemWithDetails) {
-//            System.out.println(cartItemWithDetail.getCategory().getId()); 
-//        }
-        int countCartItemSelected = 0;
-        try {
-            countCartItemSelected = cartItemDAO.countCartItemsBySelectedCustomerId(5);
-        } catch (SQLException ex) {
-            Logger.getLogger(AddToCart.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        System.out.println(countCartItemSelected);
-    }
+
 
 }

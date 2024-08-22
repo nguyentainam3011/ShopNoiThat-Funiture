@@ -89,6 +89,7 @@ public class AssignToSale extends HttpServlet {
         List<OrderSaleManager> ordersForPage = orderSaleManagers.subList(startIndex, endIndex);
 
         // Chuyển danh sách đơn hàng sang định dạng JSON
+        
         JsonArray jsonArray = new JsonArray();
         for (OrderSaleManager order : ordersForPage) {
             JsonObject jsonOrder = new JsonObject();

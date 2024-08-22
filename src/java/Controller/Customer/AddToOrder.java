@@ -53,17 +53,19 @@ import java.util.logging.Logger;
 public class AddToOrder extends HttpServlet {
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        OrderDAO orderDAO = new OrderDAO();
+         int orderupdateid= Integer.parseInt(request.getParameter("orderupdateid"));
+         process(request, response, orderupdateid);
+     }
+     private void process(HttpServletRequest request, HttpServletResponse response,int orderupdateid)
+             throws ServletException, IOException {
+         OrderDAO orderDAO = new OrderDAO();
         OrderDetailDAO orderDetailDAO = new OrderDetailDAO();
         HttpSession session = request.getSession(false);
         User customer = (User) session.getAttribute("customer");
         String orderid = request.getParameter("orderid");
-        int orderupdateid = 0;
-        if (session.getAttribute("order_" + String.valueOf(customer.getId())) != null) {
-            orderupdateid = (int) session.getAttribute("order_" + String.valueOf(customer.getId()));
-        }
+        
 
         String[] cartIds = request.getParameterValues("cartIds");
         String bankCode = request.getParameter("bankCode");
@@ -75,11 +77,6 @@ public class AddToOrder extends HttpServlet {
 
                 int addressId = Integer.parseInt(request.getParameter("addressId"));
                 paymentId = Integer.parseInt(request.getParameter("paymentId"));
-                double totalcost = Double.parseDouble(request.getParameter("totalcost"));
-
-                String[] productDetailIds = request.getParameterValues("cartDetailIds");
-                String[] quantitys = request.getParameterValues("cartDetailQuantitys");
-                String[] totalcosts = request.getParameterValues("cartDetailTotalcosts");
                 if (addressId != 0) {
                     order.setAddress_id(addressId);
                 }
@@ -87,37 +84,9 @@ public class AddToOrder extends HttpServlet {
                     order.setPaymentMethod_id(paymentId);
                     response.getWriter().print(order.getPaymentMethod_id());
                 }
-                new OrderDetailDAO().deleteOrderDetailbyOrderid(order.getId());
-                List<OrderDetail> orderDetails = new OrderDetailDAO().getOrderDetailsByOrderId(order.getId());
-                for (OrderDetail orderDetail : orderDetails) {
-                    ProductDetail productDetail = new ProductDetailDAO().getProductDetail(orderDetail.getProductdetail_id());
-                    productDetail.setQuantity(productDetail.getQuantity() + orderDetail.getQuantity());
-                    new ProductDetailDAO().updateProductDetail(productDetail);
-                    Product product = new ProductDAO().getProductByID(productDetail.getProduct_id());
-                    product.setQuantity(product.getQuantity() + orderDetail.getQuantity());
-                    new ProductDAO().updateProduct(product);
-                }
-                for (int i = 0; i < productDetailIds.length; i++) {
-                    OrderDetail orderDetail = new OrderDetail();
-                    orderDetail.setOrder_id(order.getId());
-                    orderDetail.setProductdetail_id(Integer.parseInt(productDetailIds[i]));
-                    orderDetail.setQuantity(Integer.parseInt(quantitys[i]));
-                    orderDetail.setPrice(Double.parseDouble(totalcosts[i]));
-
-                    orderDetailDAO.insertOrderDetail(orderDetail);
-                    ProductDetailDAO productDetailDAO = new ProductDetailDAO();
-                    ProductDetail productDetail = productDetailDAO.getProductDetail(Integer.parseInt(productDetailIds[i]));
-                    productDetail.setQuantity(productDetail.getQuantity() - Integer.parseInt(quantitys[i]));
-                    productDetailDAO.updateProductDetail(productDetail);
-                    ProductDAO productDAO = new ProductDAO();
-                    Product product = productDAO.getProductByID(productDetail.getProduct_id());
-                    product.setQuantity(product.getQuantity() - Integer.parseInt(quantitys[i]));
-                    productDAO.updateProduct(product);
-
-                }
 
                 new OrderDAO().updateOrder(order);
-                session.removeAttribute("order_" + String.valueOf(customer.getId()));
+
                 response.sendRedirect("MyOrderInformationServlet?id=" + order.getId());
             } catch (Exception e) {
             }
@@ -261,11 +230,14 @@ public class AddToOrder extends HttpServlet {
                 response.getWriter().write(job.toString());
             }
         }
+     }
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        process(request, response,0);
 
     }
 
-    public static void main(String[] args) throws SQLException {
-
-    }
+   
 
 }
